@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spdx/spdx-spec/v2.2.1/schemas/spdx-schema.json",
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "documentNamespace": "https://spdx.org/spdxdocs/pkgconf-x64-linux-2.1.0-c5066177-0b04-46f0-80a4-4668027feaf9",
+  "name": "pkgconf:x64-linux@2.1.0 86bb3163a9b6e1077a2e118f62fb4935932a68cf18805c2924a3e1ea4548cdc0",
+  "creationInfo": {
+    "creators": [
+      "Tool: vcpkg-1c9ec1978a6b0c2b39c9e9554a96e3e275f7556e"
+    ],
+    "created": "2024-01-23T08:39:01Z"
+  },
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "GENERATES",
+      "relatedSpdxElement": "SPDXRef-binary"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-0"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-1"
+    },
+    {
+      "spdxElementId": "SPDXRef-binary",
+      "relationshipType": "GENERATED_FROM",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-0",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    }
+  ],
+  "packages": [
+    {
+      "name": "pkgconf",
+      "SPDXID": "SPDXRef-port",
+      "versionInfo": "2.1.0",
+      "downloadLocation": "NOASSERTION",
+      "homepage": "https://github.com/pkgconf/pkgconf",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "pkgconf is a program which helps to configure compiler and linker flags for development libraries. It is similar to pkg-config from freedesktop.org.",
+      "comment": "This is the port (recipe) consumed by vcpkg."
+    },
+    {
+      "name": "pkgconf:x64-linux",
+      "SPDXID": "SPDXRef-binary",
+      "versionInfo": "86bb3163a9b6e1077a2e118f62fb4935932a68cf18805c2924a3e1ea4548cdc0",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "comment": "This is a binary package built by vcpkg."
+    },
+    {
+      "SPDXID": "SPDXRef-resource-1",
+      "name": "pkgconf/pkgconf",
+      "downloadLocation": "git+https://github.com/pkgconf/pkgconf@pkgconf-2.1.0",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "40abbfdbd64ac95d0e9578acc5f1cb2b692d4c1bfa9f07c4eb1042380bcebff5c063434da2f64bc986c8a7163cde4f7051ba61400461b103616253ab739d4e43"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".//home/lekmax_77/PROJECT/Babel/_deps/vcpkg-src/ports/pkgconf/portfile.cmake",
+      "SPDXID": "SPDXRef-file-0",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aab2e116ea7effe858f2081215fceedf13badffc44e2c851e24f35712a43b5dd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".//home/lekmax_77/PROJECT/Babel/_deps/vcpkg-src/ports/pkgconf/vcpkg.json",
+      "SPDXID": "SPDXRef-file-1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba1b2e5b24d8d9dc6f71d9a33256acb69e445b9c529a49e0b2c4ce1c9c748bfc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ]
+}

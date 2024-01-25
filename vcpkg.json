@@ -1,6 +1,7 @@
 {
     "dependencies": [
-      "qt5"
+      "qt5",
+      "asio"
     ]
   }
   
