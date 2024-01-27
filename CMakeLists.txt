@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(Babel)
+cmake_policy(SET CMP0135 NEW)
+
 
 include(FetchContent)
 
@@ -51,6 +53,10 @@ set(VCPKG_INSTALLED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed" CACHE STRI
 message(STATUS "FIND PACKAGES...")
 set(CMAKE_PREFIX_PATH "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
 
+# Find OpenCV
+# find_package(OpenCV REQUIRED)
+# include_directories(${OpenCV_INCLUDE_DIRS})
+
 message(STATUS "START PROJECTS SETUP...")
-# add_subdirectory(server)
+add_subdirectory(server)
 add_subdirectory(client)

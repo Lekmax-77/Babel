@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 #include <iostream>
 #include <fstream>
 #include <portaudio.h>
@@ -6,7 +13,51 @@
 #define SAMPLE_RATE 44100
 #define FRAMES_PER_BUFFER 1024
 
+
+int recordCallback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void* userData)
+{
+    AudioController* _record = (AudioController*)userData;
+    const float* input = (const float*)inputBuffer;
+    unsigned char* audio_data = NULL;
+    int _len = 0;
+
+    // NO WARNING
+    (void)timeInfo;
+    (void)statusFlags;
+    (void)outputBuffer;
+
+    _record->getEncoding().encodeAudio(input, &_len, &audio_data);
+    _record->setAudioData(audio_data);
+    _record->setLen(_len);
+    return paContinue;
+}
+
 int main() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PaError err = Pa_Initialize();
     if (err != paNoError) {
         std::cerr << "Error initializing PortAudio: " << Pa_GetErrorText(err) << std::endl;
@@ -16,14 +67,16 @@ int main() {
     PaStream *stream;
 
     PaStreamParameters inputParameters;
-    inputParameters.device = Pa_GetDefaultInputDevice();  // ou spécifiez le périphérique audio directement
-    inputParameters.channelCount = 1;
-    inputParameters.sampleFormat = paInt16;
+    inputParameters.device = Pa_GetDefaultInputDevice();
+    inputParameters.channelCount = 2;
+    inputParameters.sampleFormat = paFloat32;
     inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
     inputParameters.hostApiSpecificStreamInfo = nullptr;
 
-    err = Pa_OpenStream(&stream, &inputParameters, nullptr, SAMPLE_RATE, FRAMES_PER_BUFFER, paNoFlag, nullptr, nullptr);
-
+    err = Pa_OpenStream(&stream, &inputParameters, nullptr, 24000, 480, paClipOff, nullptr, nullptr);
+    
+    
+    return 0;
     if (err != paNoError) {
         std::cerr << "Error opening stream: " << Pa_GetErrorText(err) << std::endl;
         Pa_Terminate();
@@ -40,7 +93,8 @@ int main() {
 
     std::cout << "Recording... Press Enter to stop." << std::endl;
 
-    while (getchar() == '\0') {
+
+    while (std::cin.get() == '\0') {
         std::vector<unsigned char> audioData(FRAMES_PER_BUFFER * 2);  // 2 bytes per sample (paInt16)
 
         err = Pa_ReadStream(stream, audioData.data(), FRAMES_PER_BUFFER);
@@ -50,7 +104,7 @@ int main() {
         }
 
         // Enregistrez les données audio dans un fichier
-        std::ofstream outputFile("enregistrement_audio.raw", std::ios::app | std::ios::binary);
+        std::ofstream outputFile("enregistrement_audio.raw", std::ios::binary);
         if (outputFile.is_open()) {
             outputFile.write(reinterpret_cast<const char*>(audioData.data()), audioData.size());
             outputFile.close();

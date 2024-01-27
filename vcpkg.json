@@ -1,7 +1,8 @@
 {
     "dependencies": [
-      "qt5",
-      "asio"
+      "asio",
+      "opus",
+      "sqlitecpp"
     ]
   }
   

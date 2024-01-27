@@ -1,4 +1,7 @@
-
+id client:
+    1 = online,
+    0 = offline,
+    2 = in call
 
 
 
@@ -11,7 +14,15 @@ transmission de video client client
 Reforge of code to good
 
 
-
+{
+    "dependencies": [
+      "qt5",
+      "asio",
+      "opus",
+      "opencv4"
+    ]
+  }
+  
 
 
 

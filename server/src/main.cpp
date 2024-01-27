@@ -6,76 +6,41 @@
 */
 
 #include <iostream>
-#include <vector>
-#include <array>
-#include <boost/asio.hpp>
+#include <asio.hpp>
+#include "Server.hpp"
+#include "DatabasesSqlite.hpp"
+#include <memory>
 
-const int max_length = 1024;
-
-class Server
+int Launch_Server(int port)
 {
-    public:
-        Server(boost::asio::io_context& io_context, short port)
-            : socket_(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port)) {
-            startReceive();
-        }
 
-    private:
-        void startReceive() {
-            socket_.async_receive_from(
-                boost::asio::buffer(data_, max_length), sender_endpoint_,
-                [this](const boost::system::error_code& error, std::size_t bytes_received) {
-                    handleReceive(error, bytes_received);
-                });
-        }
-
-        void handleReceive(const boost::system::error_code& error, std::size_t bytes_received) {
-            if (!error) {
-                processMessage(bytes_received);
-                startReceive();
-            }
-        }
-
-        void processMessage(std::size_t length) {
-            // Assume that the received data is a simple binary protocol.
-            // You should implement your own protocol based on your application needs.
-            // For example, you might want to define a specific structure for your messages.
-
-            // This is just a simple example, assuming the data is an integer.
-            if (length == sizeof(int)) {
-                int receivedValue;
-                std::memcpy(&receivedValue, data_.data(), sizeof(int));
-
-                // Process the received value (you can replace this with your own logic).
-                std::cout << "Received: " << receivedValue << std::endl;
-            }
-        }
-
-        boost::asio::ip::udp::socket socket_;
-        boost::asio::ip::udp::endpoint sender_endpoint_;
-        std::array<char, max_length> data_;
-};
-
-
-int main(int ac, char **av) {
-
-    if (ac != 2) {
-        std::cerr << "Usage : ./babel_server <port>" << std::endl;
-        return 1;
-    } else if (av[1] == "-h" || av[1] == "--help") {
-        std::cout << "Usage : ./babel_server <port>" << std::endl;
-        return 0;
-    }
-    
-    std::cout << "Server started on port " << av[1] << std::endl;
+    Server::SQLiteDatabase db();
+    std::vector<Server::Client> clients = db.getUsers();
     try {
-        
-        boost::asio::io_context io_context;
-        Server server(io_context, std::stoi(av[1])); 
-        io_context.run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
+        asio::io_context ioContext;
+        Server:: MultiClientServer server(ioContext, 12345);
+        //std::unique_ptr<Client::INetworkManager> client = std::make_unique<Client::AsioNetworkManager>(ioContext, host, port);
+    
+        ioContext.run();
+    } catch (const std::exception& e) {
+        std::cerr << "Exception : " << e.what() << std::endl;
     }
     return 0;
 }
 
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        std::cerr << "Usage: ./Babel_Server <port>" << std::endl;
+        return 84;
+    } else if (atoi(argv[2]) < 0 || atoi(argv[2]) > 65535) {
+        std::cerr << "Invalid port" << std::endl;
+        return 84;
+    } else if (argc  == 2 && std::string(argv[1]) == "-help") {
+        std::cout << "USAGE: ./Babel_Server <port>" << std::endl;
+        std::cout << "\t<port> is the server port number" << std::endl;
+        return 0;
+    }
+
+    return Launch_Server(atoi(argv[1]));
+    return 0;
+}
