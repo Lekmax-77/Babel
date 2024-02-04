@@ -67,7 +67,7 @@ class Session : public std::enable_shared_from_this<Session>
 class Server {
     public:
         Server(asio::io_context &ioContext, short port)
-        : acceptor_(ioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)), socket_(ioContext) {
+        : acceptor_(ioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)),  socket_(ioContext){
             doAccept();
         }
 

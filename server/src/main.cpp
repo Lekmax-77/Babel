@@ -7,21 +7,19 @@
 
 #include <iostream>
 #include <asio.hpp>
-#include "Server.hpp"
+#include "MultiClientServer.hpp"
 #include "DatabasesSqlite.hpp"
 #include <memory>
 
 int Launch_Server(int port)
 {
-
-    Server::SQLiteDatabase db();
-    std::vector<Server::Client> clients = db.getUsers();
+    // Server::SQLiteDatabase db;
+    // std::vector<Server::Client> clients = db.getUsers();
     try {
         asio::io_context ioContext;
-        Server:: MultiClientServer server(ioContext, 12345);
-        //std::unique_ptr<Client::INetworkManager> client = std::make_unique<Client::AsioNetworkManager>(ioContext, host, port);
+        std::shared_ptr<Babel::Server::Network::MultiClientServer> server = std::make_shared<Babel::Server::Network::MultiClientServer>(ioContext, port);
     
-        ioContext.run();
+        server->run();
     } catch (const std::exception& e) {
         std::cerr << "Exception : " << e.what() << std::endl;
     }
@@ -32,7 +30,7 @@ int main(int argc, char *argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: ./Babel_Server <port>" << std::endl;
         return 84;
-    } else if (atoi(argv[2]) < 0 || atoi(argv[2]) > 65535) {
+    } else if (atoi(argv[1]) < 0 || atoi(argv[1]) > 65535) {
         std::cerr << "Invalid port" << std::endl;
         return 84;
     } else if (argc  == 2 && std::string(argv[1]) == "-help") {

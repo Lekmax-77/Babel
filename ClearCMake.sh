@@ -1,0 +1,1 @@
+rm -rf CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile _deps vcpkg_installed client/CMakeFiles/ client/CMakeCache.txt client/cmake_install.cmake client/Makefile server/CMakeFiles/ server/CMakeCache.txt server/cmake_install.cmake server/Makefile

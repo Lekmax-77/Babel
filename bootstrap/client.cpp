@@ -12,84 +12,87 @@ uint32_t convertToHostOrder(uint32_t value) {
 }
 
 class Client {
-public:
-    Client(asio::io_context& ioContext, const std::string& host, short port)
-        : socket_(ioContext), inputBuffer_(), outputBuffer_() {
-        // Résolution de l'adresse IP du serveur
-        asio::ip::tcp::resolver resolver(ioContext);
-        auto endpoints = resolver.resolve(host, std::to_string(port));
+    public:
+        Client(asio::io_context& ioContext, const std::string& host, short port)
+            : socket_(ioContext), inputBuffer_(), outputBuffer_() {
+            // Résolution de l'adresse IP du serveur
+            asio::ip::tcp::resolver resolver(ioContext);
+            auto endpoints = resolver.resolve(host, std::to_string(port));
 
-        // Connexion au serveur
-        asio::connect(socket_, endpoints);
+            // Connexion au serveur
+            asio::connect(socket_, endpoints);
 
-        // Lancer la lecture en arrière-plan
-        doRead();
-    }
+            // Confirmé la connexion au serveur
+            std::cout << "Connecté au serveur" << std::endl;
 
-    void run() {
-        // Lancer la saisie utilisateur en arrière-plan
-        doWrite();
-    }
+            // Lancer la lecture en arrière-plan
+            doRead();
+        }
 
-private:
-    void doRead() {
-        asio::async_read_until(socket_, inputBuffer_, '\n',
-            [this](const asio::error_code& ec, std::size_t /*length*/) {
-                if (!ec) {
-                    handleRead();
-                    doRead();
-                } else {
-                    // Gérer la déconnexion du serveur ou toute autre erreur
-                    std::cerr << "Erreur de lecture : " << ec.message() << std::endl;
-                }
-            });
-    }
+        void run() {
+            // Lancer la saisie utilisateur en arrière-plan
+            doWrite();
+        }
 
-    void handleRead() {
-        // Lire les données du buffer
-        std::string message(asio::buffers_begin(inputBuffer_.data()),
-                            asio::buffers_end(inputBuffer_.data()));
+    private:
+        void doRead() {
+            asio::async_read_until(socket_, inputBuffer_, '\n',
+                [this](const asio::error_code& ec, std::size_t /*length*/) {
+                    if (!ec) {
+                        handleRead();
+                        doRead();
+                    } else {
+                        // Gérer la déconnexion du serveur ou toute autre erreur
+                        std::cerr << "Erreur de lecture : " << ec.message() << std::endl;
+                    }
+                });
+        }
 
-        // Afficher le message reçu
-        std::cout << "Message du serveur : " << message;
+        void handleRead() {
+            // Lire les données du buffer
+            std::string message(asio::buffers_begin(inputBuffer_.data()),
+                                asio::buffers_end(inputBuffer_.data()));
 
-        // Effacer le buffer d'entrée
-        inputBuffer_.consume(inputBuffer_.size());
-    }
+            // Afficher le message reçu
+            std::cout << "Message du serveur : " << message;
 
-    void doWrite() {
-        // Lire l'entrée utilisateur depuis le terminal
-        std::cout << "&> ";
-        std::getline(std::cin, userInput_);
-        size_t len = userInput_.length();
-        uint32_t networkOrderSize = convertToNetworkOrder(len); // Convertir de host à network
+            // Effacer le buffer d'entrée
+            inputBuffer_.consume(inputBuffer_.size());
+        }
 
-        // Envoyer les données au serveur
-        asio::async_write(socket_, asio::buffer(&networkOrderSize, sizeof(networkOrderSize)),
-            [this](const asio::error_code& ec, std::size_t length) {
-                if (!ec) {
-                    asio::async_write(socket_, asio::buffer(userInput_ + '\n'),
-                        [this](const asio::error_code& ec, std::size_t length) {
-                            if (!ec) {
-                                // Continuer la saisie utilisateur
-                                doWrite();
-                            } else {
-                                // Gérer la déconnexion du serveur ou toute autre erreur
-                                std::cerr << "Erreur d'écriture : " << ec.message() << std::endl;
-                            }
-                        });
-                } else {
-                    // Gérer la déconnexion du serveur ou toute autre erreur
-                    std::cerr << "Erreur d'écriture : " << ec.message() << std::endl;
-                }
-            });
-    }
+        void doWrite() {
+            // Lire l'entrée utilisateur depuis le terminal
+            std::cout << "&> ";
+            std::getline(std::cin, userInput_);
+            size_t len = userInput_.length();
+            uint32_t networkOrderSize = convertToNetworkOrder(len); // Convertir de host à network
 
-    asio::ip::tcp::socket socket_;
-    asio::streambuf inputBuffer_;
-    asio::streambuf outputBuffer_;
-    std::string userInput_;
-};
+            // Envoyer les données au serveur
+            asio::async_write(socket_, asio::buffer(&networkOrderSize, sizeof(networkOrderSize)),
+                [this](const asio::error_code& ec, std::size_t length) {
+                    if (!ec) {
+                        asio::async_write(socket_, asio::buffer(userInput_ + '\n'),
+                            [this](const asio::error_code& ec, std::size_t length) {
+                                if (!ec) {
+                                    // Continuer la saisie utilisateur
+                                    doWrite();
+                                } else {
+                                    // Gérer la déconnexion du serveur ou toute autre erreur
+                                    std::cerr << "Erreur d'écriture : " << ec.message() << std::endl;
+                                }
+                            });
+                    } else {
+                        // Gérer la déconnexion du serveur ou toute autre erreur
+                        std::cerr << "Erreur d'écriture : " << ec.message() << std::endl;
+                    }
+                });
+        }
+
+        asio::ip::tcp::socket socket_;
+        asio::streambuf inputBuffer_;
+        asio::streambuf outputBuffer_;
+        std::string userInput_;
+    };
 
 int main(int argc, char* argv[]) {
     try {

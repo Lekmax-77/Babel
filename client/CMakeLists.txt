@@ -9,17 +9,34 @@ project(Babel_Client
 
 # Définir les sources de l'application
 set(SOURCES
-    src/main.cpp
+        src/main.cpp
+        src/NetworkManager.cpp
+        src/Cli.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+# includes/Audio.hpp
 
+# includes/Contacts.hpp
+
+# includes/Call_Journals.hpp
+
+set(HEADERS
+        ../common/Message.hpp
+        ../common/Client.hpp
+        includes/NetworkManager.hpp
+        includes/Cli.hpp
+        )
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 list(APPEND CLIENT_EXTRA_INCLUDES "includes")
 target_include_directories(${PROJECT_NAME} PUBLIC ${CLIENT_EXTRA_INCLUDES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include)
 
-# Définir la version minimale de Qt nécessaire
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
+
+find_package(Opus CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME}  PRIVATE Opus::opus)
+
+
 
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
